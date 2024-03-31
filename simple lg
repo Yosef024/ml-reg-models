@@ -1,0 +1,33 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+from sklearn.preprocessing import StandardScaler
+#importing dataset
+dataset=pd.read_csv('Salary_Data.csv')
+x=dataset.iloc[:,:-1]
+y=dataset.iloc[:,1]
+#splitting data
+xtrain,xtest,y_train,ytest=train_test_split(x,y,train_size=0.8,random_state=0)
+# no need for feature scaling
+lg=LinearRegression()
+lg.fit(xtrain,y_train)
+ypred=lg.predict(xtest)
+plt.scatter(xtrain, y_train, color = 'purple')
+plt.plot(xtrain, lg.predict(xtrain), color = 'purple')
+plt.title('Salary vs Experience (Training set)')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.show()
+
+plt.scatter(xtest, ytest, color = 'blue')
+plt.plot(xtest, lg.predict(xtest), color = 'blue')
+plt.title('Salary vs Experience (Training set)')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.show()
+print (ytest)
+print("////////")
+print(ypred)
