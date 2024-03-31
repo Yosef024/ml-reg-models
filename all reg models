@@ -1,0 +1,53 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+dataset=pd.read_csv('Data.csv')
+x=dataset.iloc[:,:-1].values
+y=dataset.iloc[:,-1].values
+y=y.reshape(-1,1)
+#multiple linear reg
+from sklearn.linear_model import LinearRegression
+reg1=LinearRegression()
+from sklearn.model_selection import train_test_split
+xtrain,xtest,y_train,ytest=train_test_split(x,y,train_size=0.8,random_state=0)
+reg1.fit(xtrain,y_train)
+from sklearn.metrics import r2_score
+p=r2_score(ytest,reg1.predict(xtest))
+print(p)
+#polynomial lg
+from sklearn.preprocessing import PolynomialFeatures
+xpoly=PolynomialFeatures(degree=4)
+xpoly=xpoly.fit_transform(xtrain)
+reg2=LinearRegression()
+reg2.fit(xpoly,y_train)
+xpoly2=PolynomialFeatures(degree=4)
+xpoly2=xpoly2.fit_transform(xtest)
+p=r2_score(ytest,reg2.predict(xpoly2))
+print(p)
+#svr
+from sklearn.preprocessing import StandardScaler
+stx=StandardScaler()
+sty=StandardScaler()
+xr=stx.fit_transform(xtrain)
+yr=sty.fit_transform(y_train)
+from sklearn.svm import SVR
+svr=SVR(kernel='rbf')
+svr.fit(xr,yr)
+xt=stx.transform(xtest)
+yp=sty.inverse_transform(svr.predict(xt).reshape(-1,1))
+p=r2_score(ytest,yp)
+print(p)
+#tree
+from sklearn.tree import DecisionTreeRegressor
+dtr=DecisionTreeRegressor()
+dtr.fit(xtrain,y_train)
+yp=dtr.predict(xtest)
+p=r2_score(ytest,yp)
+print(p)
+#forest
+from sklearn.ensemble import RandomForestRegressor
+rfg=RandomForestRegressor(n_estimators=10,random_state=0)
+rfg.fit(xtrain,y_train)
+yp=rfg.predict(xtest)
+p=r2_score(ytest,yp)
+print(p)
